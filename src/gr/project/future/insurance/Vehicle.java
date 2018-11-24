@@ -1,3 +1,5 @@
+package gr.project.future.insurance;
+
 import java.time.LocalDate;
 
 public class Vehicle {
