@@ -1,6 +1,9 @@
 package gr.project.future.insurance;
 
+import gr.project.future.enums.OptionIO;
+
 import java.time.LocalDate;
+import java.util.List;
 
 public class Vehicle {
 
@@ -12,6 +15,48 @@ public class Vehicle {
         this.plate = plate;
         this.owner = owner;
         this.insuranceEndDate = insuranceEndDate;
+    }
+
+    public static void GetInsuranceStatusBasedOnPlate(List<Vehicle> vehicleList, String plate, int optionIO) {
+
+        boolean found = false;
+
+        for (Vehicle v : vehicleList) {
+
+            if (v.getPlate().equals(plate)) {
+                found = true;
+                String sout = "The vehicle with plate '" + plate + "' has ";
+                if (!v.insuranceIsExpired()) {
+                    sout = sout + "not ";
+                }
+                sout = sout + "expired.";
+                if (optionIO == OptionIO.FILE.getOption()) {
+                    // TODO File write
+                } else if (optionIO == OptionIO.CONSOLE.getOption()) {
+                    System.out.println(sout);
+                } else {
+                    System.out.println(sout);
+                }
+            }
+
+        }
+        if (!found) {
+            System.out.println("The vehicle with plate '" + plate + "' was not found.");
+        }
+    }
+
+    private static String[] bubbleSort(String[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j].compareTo(arr[j + 1]) > 0) {
+                    String temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+        return arr;
     }
 
     public String getPlate() {
@@ -52,20 +97,6 @@ public class Vehicle {
         } else { // an exei lhksei h asfaleia
             return -1;
         }
-    }
-
-    private static String[] bubbleSort(String[] arr) {
-        int n = arr.length;
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                if (arr[j].compareTo(arr[j + 1]) > 0) {
-                    String temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
-            }
-        }
-        return arr;
     }
 
 }

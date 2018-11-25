@@ -1,5 +1,8 @@
 package gr.project.future.insurance;
 
+import gr.project.future.enums.OptionIO;
+import gr.project.future.enums.OptionMenu;
+
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,32 +10,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static gr.project.future.insurance.Vehicle.GetInsuranceStatusBasedOnPlate;
+
 public class MainMenu {
 
-    public static void GetInsuranceStatusBasedOnPlate(List<Vehicle> vehicleList, String plate, int optionIO) {
+    private int optionMenu;
+    private int optionIO;
 
-        for (Vehicle v: vehicleList) {
-            if (v.getPlate().equals(plate)) {
-                String sout = "The vehicle with plate '" + plate + "' has ";
-                if (!v.insuranceIsExpired()) {
-                    sout = sout + "not ";
-                }
-                sout = sout + "expired.";
-                if (optionIO == OptionIO.FILE.getOption()){
-                    // TODO File write
-                }
-                else if (optionIO == OptionIO.CONSOLE.getOption()) {
-                    System.out.println(sout);
-                }
-                else {
-                    System.out.println(sout);
-                }
-            }
-        }
+    public int getOptionIO() {
+        return optionIO;
     }
 
+    public void setOptionIO(int optionIO) {
+        this.optionIO = optionIO;
+    }
 
-    public static void main(String[] args) throws IOException {
+    public int getOptionMenu() {
+        return optionMenu;
+    }
+
+    public void setOptionMenu(int optionMenu) {
+        this.optionMenu = optionMenu;
+    }
+
+    public MainMenu() {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Select Functionality to perform:");
@@ -40,11 +41,11 @@ public class MainMenu {
         System.out.println("*2 Forecoming Expiries");
         System.out.println("*3 Expiries by plate");
 
-        int optionMenu = 0;
+        setOptionMenu(OptionMenu.NONE.getOption());
 
-        while (optionMenu == 0) {
+        while (getOptionMenu() == 0) {
             try {
-                optionMenu = Integer.parseInt(br.readLine());
+                setOptionMenu(Integer.parseInt(br.readLine()));
             } catch (NumberFormatException nfe) {
                 System.err.println("Invalid Format! Try again.");
             } catch (Exception e) {
@@ -56,15 +57,18 @@ public class MainMenu {
         System.out.println("*1 File");
         System.out.println("*2 Console");
 
-        int optionIO = 0;
+        setOptionIO(OptionIO.NONE.getOption());
 
         try {
-            optionIO = Integer.parseInt(br.readLine());
+            setOptionIO(Integer.parseInt(br.readLine()));
         } catch (NumberFormatException nfe) {
             System.err.println("Invalid Format! Try again.");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void readFromFile(List<Owner> ownersList, List<Vehicle> vehiclesList) {
 
         Scanner scanner = null;
         try {
@@ -73,9 +77,6 @@ public class MainMenu {
             e.printStackTrace();
         }
         scanner.useDelimiter(",");
-
-        List<Owner> ownersList = new ArrayList<>();
-        List<Vehicle> vehiclesList = new ArrayList<>();
 
         while(scanner.hasNext()){
             String ownerName = scanner.next().strip();
@@ -98,10 +99,23 @@ public class MainMenu {
         }
         scanner.close();
 
-        //get Vehicle insurance based on plate
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        MainMenu mainMenu = new MainMenu();
+
+        List<Owner> ownersList = new ArrayList<>();
+        List<Vehicle> vehiclesList = new ArrayList<>();
+
+        //read from csv and fill lists with data
+        readFromFile(ownersList, vehiclesList);
+
+        //F1: get Vehicle's insurance based on plate
         System.out.println("Please enter vehicle plate:");
         //TODO plate format error
-        GetInsuranceStatusBasedOnPlate(vehiclesList, br.readLine(), optionIO);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        GetInsuranceStatusBasedOnPlate(vehiclesList, br.readLine(), mainMenu.getOptionIO());
 
 
     }

@@ -1,6 +1,7 @@
-package gr.project.future.insurance;
+package gr.project.future.enums;
 
 public enum OptionIO {
+    NONE (0),
     FILE  (1),
     CONSOLE(2);
 
