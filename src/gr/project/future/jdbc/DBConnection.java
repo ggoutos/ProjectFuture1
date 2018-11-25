@@ -26,7 +26,6 @@ public class DBConnection {
 					properties.getProperty("DB_USER"),
 					properties.getProperty("DB_PASSWORD"));
 		} catch (IOException | ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return connection;
