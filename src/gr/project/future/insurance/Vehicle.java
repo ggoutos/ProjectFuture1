@@ -4,14 +4,15 @@ import java.time.LocalDate;
 
 public class Vehicle {
 
-    // Fields
-
     private String plate;
-    private String ownerName;
+    private Owner owner;
     private LocalDate insuranceEndDate;
 
-
-    // Methods
+    public Vehicle(String plate, Owner owner, LocalDate insuranceEndDate) {
+        this.plate = plate;
+        this.owner = owner;
+        this.insuranceEndDate = insuranceEndDate;
+    }
 
     public String getPlate() {
         return plate;
@@ -21,12 +22,12 @@ public class Vehicle {
         this.plate = plate;
     }
 
-    public String getOwnerName() {
-        return ownerName;
+    public Owner getOwner() {
+        return owner;
     }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
     public LocalDate getInsuranceEndDate() {
@@ -37,16 +38,16 @@ public class Vehicle {
         this.insuranceEndDate = insuranceEndDate;
     }
 
-    public boolean expiredInsurance() {
+    public boolean insuranceIsExpired() {
         LocalDate today = LocalDate.now();
         // insuranceEndDate < today
-// insuranceEndDate >= today
+        // insuranceEndDate >= today
         return this.insuranceEndDate.compareTo(today) < 0;
     }
 
     public long daysToExpire() {
         LocalDate today = LocalDate.now();
-        if (!expiredInsurance()) { // an den exei liksei h asfaleia
+        if (!insuranceIsExpired()) { // an den exei liksei h asfaleia
             return (this.insuranceEndDate.toEpochDay() - today.toEpochDay());
         } else { // an exei lhksei h asfaleia
             return -1;
