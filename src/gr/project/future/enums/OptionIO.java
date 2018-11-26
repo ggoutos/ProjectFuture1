@@ -15,4 +15,13 @@ public enum OptionIO {
         return option;
     }
 
+    public static boolean contains(int value) {
+        for (OptionIO o : OptionIO.values()) {
+            if (value == o.getOption()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

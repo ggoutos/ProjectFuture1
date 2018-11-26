@@ -2,8 +2,13 @@ package gr.project.future.insurance;
 
 import gr.project.future.enums.OptionIO;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Vehicle {
 
@@ -17,32 +22,68 @@ public class Vehicle {
         this.insuranceEndDate = insuranceEndDate;
     }
 
-    public static void GetInsuranceStatusBasedOnPlate(List<Vehicle> vehicleList, String plate, int optionIO) {
+    public static void getInsuranceStatusBasedOnPlate(List<Vehicle> vehiclesList, String plate, int optionIO) {
 
         boolean found = false;
+        String message = "";
+        String path = "resources/output.txt";
 
-        for (Vehicle v : vehicleList) {
-
-            if (v.getPlate().equals(plate)) {
+        for (Vehicle v : vehiclesList) {
+            if (v.getPlate().equalsIgnoreCase(plate)) {
                 found = true;
-                String sout = "The vehicle with plate '" + plate + "' has ";
+                message = "The vehicle with plate '" + plate.toUpperCase() + "' has ";
                 if (!v.insuranceIsExpired()) {
-                    sout = sout + "not ";
+                    message = message + "not ";
                 }
-                sout = sout + "expired.";
-                if (optionIO == OptionIO.FILE.getOption()) {
-                    // TODO File write
-                } else if (optionIO == OptionIO.CONSOLE.getOption()) {
-                    System.out.println(sout);
-                } else {
-                    System.out.println(sout);
-                }
+                message = message + "expired.";
             }
+        }
 
-        }
         if (!found) {
-            System.out.println("The vehicle with plate '" + plate + "' was not found.");
+            message = "The vehicle with plate '" + plate.toUpperCase() + "' was not found.";
         }
+
+        System.out.println(message);
+
+        if (optionIO == OptionIO.FILE.getOption()) {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+                writer.write(message);
+                writer.close();
+                System.out.println("Message written in log file '" + path + "'");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public static void getForecomingExpiries(List<Vehicle> vehiclesList, int days, int optionIO) throws IOException {
+
+        List<Vehicle> tempVehiclesList = new ArrayList<>();
+        String path = "resources/output.txt";
+        BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+
+        for (Vehicle v : vehiclesList) {
+            if (v.daysToExpire() < 0 || v.daysToExpire() > days) {
+                tempVehiclesList.add(v);
+            }
+        }
+
+        vehiclesList.removeAll(tempVehiclesList);
+
+        for (Vehicle v : vehiclesList) {
+            String message = "The insurance of vehicle with plate " + v.getPlate() + ", owner " + v.getOwner().getName()
+                    + " " + v.getOwner().getSurname() + " and expiration date " + v.getInsuranceEndDate()
+                    + " will expire in " + v.daysToExpire() + " days.";
+            System.out.println(message);
+            if (optionIO == OptionIO.FILE.getOption()) {
+                writer.write(message);
+            }
+        }
+
+        writer.close();
+
     }
 
     private static String[] bubbleSort(String[] arr) {
@@ -99,4 +140,18 @@ public class Vehicle {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vehicle vehicle = (Vehicle) o;
+        return plate.equals(vehicle.plate) &&
+                owner.equals(vehicle.owner) &&
+                insuranceEndDate.equals(vehicle.insuranceEndDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(plate, owner, insuranceEndDate);
+    }
 }
