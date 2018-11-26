@@ -9,8 +9,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gr.project.future.insurance.Vehicle.getForecomingExpiries;
-import static gr.project.future.insurance.Vehicle.getInsuranceStatusBasedOnPlate;
+import static gr.project.future.insurance.Vehicle.*;
 import static gr.project.future.utils.Utilities.loadData;
 
 public class MainMenu {
@@ -91,10 +90,21 @@ public class MainMenu {
             //F2: get Vehicle's insurance that are about to expire
             System.out.println("To know the vehicles about to expire in the next <X> days, please provide the timeframe (in days): ");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            int days = Integer.parseInt(br.readLine());
+            int days = -1;
+            while (days < 0) {
+                try {
+                    days = Integer.parseInt(br.readLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid number. Try again.");
+                }
+            }
 
             getForecomingExpiries(vehiclesList, days, mainMenu.getOptionIO());
+        }
 
+        if (mainMenu.getOptionMenu() == OptionMenu.UNINSURED_VEHICLES_SORTED_BY_PLATE.getOption()) {
+            //F3 get uninsured vehicles sorted by their plate
+            getUninsuredVehiclesSortedByPlate(vehiclesList, mainMenu.getOptionIO());
         }
 
 

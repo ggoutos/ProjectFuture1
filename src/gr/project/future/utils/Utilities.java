@@ -3,9 +3,14 @@ package gr.project.future.utils;
 import gr.project.future.enums.OptionIO;
 import gr.project.future.insurance.Owner;
 import gr.project.future.insurance.Vehicle;
+import gr.project.future.jdbc.DBConnection;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -64,5 +69,24 @@ public class Utilities {
     public static void readFromDatabase(List<Owner> ownersList, List<Vehicle> vehiclesList) {
         //TODO readFromDatabase implementation
         System.out.println("Read from database not ready yet.");
+
+        String QUERY = "SELECT * FROM customers WHERE ContactTitle = ?";
+
+        try {
+            Connection connection = DBConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(QUERY);
+            statement.setString(1, "Owner");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                String name = rs.getString("CompanyName");
+                System.out.println(name);
+            }
+
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

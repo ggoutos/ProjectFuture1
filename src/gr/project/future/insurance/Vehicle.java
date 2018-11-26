@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ public class Vehicle {
     private String plate;
     private Owner owner;
     private LocalDate insuranceEndDate;
+    private static final String NEW_LINE = "\n";
 
     public Vehicle(String plate, Owner owner, LocalDate insuranceEndDate) {
         this.plate = plate;
@@ -49,6 +51,7 @@ public class Vehicle {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(path));
                 writer.write(message);
+                writer.write(NEW_LINE);
                 writer.close();
                 System.out.println("Message written in log file '" + path + "'");
             } catch (IOException e) {
@@ -79,11 +82,55 @@ public class Vehicle {
             System.out.println(message);
             if (optionIO == OptionIO.FILE.getOption()) {
                 writer.write(message);
+                writer.write(NEW_LINE);
             }
         }
 
         writer.close();
 
+    }
+
+
+    public static void getUninsuredVehiclesSortedByPlate(List<Vehicle> vehiclesList, int optionIO) throws IOException {
+
+        List<Vehicle> tempVehiclesList = new ArrayList<>();
+        String path = "resources/output.txt";
+        BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+
+        for (Vehicle v : vehiclesList) {
+            if (!v.insuranceIsExpired()) {
+                tempVehiclesList.add(v);
+            }
+        }
+
+        vehiclesList.removeAll(tempVehiclesList);
+
+        Collections.sort(vehiclesList, new VehicleComparator());
+
+        for (Vehicle v : vehiclesList) {
+            String message = "The insurance of vehicle with plate " + v.getPlate() + ", owner " + v.getOwner().getName()
+                    + " " + v.getOwner().getSurname() + " and expiration date " + v.getInsuranceEndDate()
+                    + " has expired " + (-1)*v.daysToExpire() + " days ago.";
+            System.out.println(message);
+            if (optionIO == OptionIO.FILE.getOption()) {
+                writer.write(message);
+                writer.write(NEW_LINE);
+            }
+        }
+
+        writer.close();
+
+    }
+
+
+    public boolean insuranceIsExpired() {
+        LocalDate today = LocalDate.now();
+        return this.insuranceEndDate.compareTo(today) < 0;
+    }
+
+    public long daysToExpire() {
+        LocalDate today = LocalDate.now();
+        return this.insuranceEndDate.toEpochDay() - today.toEpochDay();
     }
 
     private static String[] bubbleSort(String[] arr) {
@@ -98,6 +145,21 @@ public class Vehicle {
             }
         }
         return arr;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vehicle vehicle = (Vehicle) o;
+        return plate.equals(vehicle.plate) &&
+                owner.equals(vehicle.owner) &&
+                insuranceEndDate.equals(vehicle.insuranceEndDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(plate, owner, insuranceEndDate);
     }
 
     public String getPlate() {
@@ -122,36 +184,5 @@ public class Vehicle {
 
     public void setInsuranceEndDate(LocalDate insuranceEndDate) {
         this.insuranceEndDate = insuranceEndDate;
-    }
-
-    public boolean insuranceIsExpired() {
-        LocalDate today = LocalDate.now();
-        // insuranceEndDate < today
-        // insuranceEndDate >= today
-        return this.insuranceEndDate.compareTo(today) < 0;
-    }
-
-    public long daysToExpire() {
-        LocalDate today = LocalDate.now();
-        if (!insuranceIsExpired()) { // an den exei liksei h asfaleia
-            return (this.insuranceEndDate.toEpochDay() - today.toEpochDay());
-        } else { // an exei lhksei h asfaleia
-            return -1;
-        }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Vehicle vehicle = (Vehicle) o;
-        return plate.equals(vehicle.plate) &&
-                owner.equals(vehicle.owner) &&
-                insuranceEndDate.equals(vehicle.insuranceEndDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(plate, owner, insuranceEndDate);
     }
 }
