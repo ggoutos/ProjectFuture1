@@ -107,6 +107,24 @@ public class MainMenu {
             getUninsuredVehiclesSortedByPlate(vehiclesList, mainMenu.getOptionIO());
         }
 
+        if (mainMenu.getOptionMenu() == OptionMenu.FINE_CALCULATION_PER_OWNER.getOption()){
+            //F4 calculate total fine for a specific owner
+            FineCalculator fineCalculator = new FineCalculator(vehiclesList);
+            System.out.println("Please enter the First name of the Owner");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+            String firstName = bufferedReader.readLine();
+            System.out.println("Please provide the Last name of the Owner");
+            String lastName = bufferedReader.readLine();
+            if(fineCalculator.isNameValid(firstName,lastName)){
+                System.out.println("Please enter the fine for a single uninsured vehicle");
+                double fine = Double.parseDouble(bufferedReader.readLine());
+                String name = fineCalculator.getName(firstName,lastName);
+                System.out.println("This owners fine is: "+fineCalculator.getFine(name,fine));
+            }else{
+                System.out.println("This owner is not valid");
+            }
+        }
+
 
     }
 
