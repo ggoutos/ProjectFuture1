@@ -33,7 +33,7 @@ public class Utilities {
 
     }
 
-    public static void readFromFile(List<Owner> ownersList, List<Vehicle> vehiclesList) {
+    private static void readFromFile(List<Owner> ownersList, List<Vehicle> vehiclesList) {
 
         Scanner scanner = null;
         try {
@@ -53,7 +53,7 @@ public class Utilities {
 
             Owner owner = new Owner(ownerName, ownerSurname);
             Vehicle vehicle = new Vehicle(plate, owner, insuranceEndDate);
-            //FIXME check contains
+
             if (!ownersList.contains(owner)) {
                 ownersList.add(owner);
             }
@@ -66,8 +66,44 @@ public class Utilities {
 
     }
 
-    public static void readFromDatabase(List<Owner> ownersList, List<Vehicle> vehiclesList) {
-        //TODO readFromDatabase implementation
-        System.out.println("Read from database not ready yet.");
+    private static void readFromDatabase(List<Owner> ownersList, List<Vehicle> vehiclesList) {
+
+        String QUERY =  "select owner.Name, owner.Surname, vehicle.Plate, vehicle.ExpireDate " +
+                        "from vehicle " +
+                        "join owner " +
+                        "on vehicle.OwnerID =  owner.ID";
+
+        try {
+            Connection connection = DBConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(QUERY);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                String name = rs.getString("Name");
+                String surname = rs.getString("Surname");
+                String plate = rs.getString("Plate");
+                String expireDate = rs.getString("ExpireDate");
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate insuranceEndDate = LocalDate.parse(expireDate, formatter);
+
+                Owner owner = new Owner(name, surname);
+                Vehicle vehicle = new Vehicle(plate, owner, insuranceEndDate);
+
+                if (!ownersList.contains(owner)) {
+                    ownersList.add(owner);
+                }
+
+                if (!vehiclesList.contains(vehicle)) {
+                    vehiclesList.add(vehicle);
+                }
+
+            }
+
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
