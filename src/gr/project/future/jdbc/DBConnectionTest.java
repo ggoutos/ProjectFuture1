@@ -9,23 +9,34 @@ public class DBConnectionTest {
 
     public static void main(String[] args) {
 
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
         String QUERY = "SELECT * FROM customers WHERE ContactTitle = ?";
 
         try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(QUERY);
+            connection = DBConnection.getConnection();
+            statement = connection.prepareStatement(QUERY);
             statement.setString(1, "Owner");
-            ResultSet rs = statement.executeQuery();
+            rs = statement.executeQuery();
 
             while (rs.next()) {
                 String name = rs.getString("CompanyName");
                 System.out.println(name);
             }
-
-            statement.close();
-            connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (statement != null)
+                    statement.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
         }
 
     }

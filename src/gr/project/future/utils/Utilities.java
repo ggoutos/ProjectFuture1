@@ -68,15 +68,19 @@ public class Utilities {
 
     private static void readFromDatabase(List<Owner> ownersList, List<Vehicle> vehiclesList) {
 
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+
         String QUERY =  "select owner.Name, owner.Surname, vehicle.Plate, vehicle.ExpireDate " +
                         "from vehicle " +
                         "join owner " +
                         "on vehicle.OwnerID =  owner.ID";
 
         try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(QUERY);
-            ResultSet rs = statement.executeQuery();
+             connection = DBConnection.getConnection();
+             statement = connection.prepareStatement(QUERY);
+             rs = statement.executeQuery();
 
             while (rs.next()) {
                 String name = rs.getString("Name");
@@ -99,11 +103,19 @@ public class Utilities {
                 }
 
             }
-
-            statement.close();
-            connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (statement != null)
+                    statement.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
         }
     }
 }
