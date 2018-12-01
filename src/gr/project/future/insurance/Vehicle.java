@@ -66,28 +66,27 @@ public class Vehicle {
         List<Vehicle> tempVehiclesList = new ArrayList<>();
         String path = "resources/output.txt";
         BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+        String message=" No vehicle expires in the upcoming days";
 
         for (Vehicle v : vehiclesList) {
-            if (v.daysToExpire() < 0 || v.daysToExpire() > days) {
-                tempVehiclesList.add(v);
+            if (v.daysToExpire() >=0 && v.daysToExpire() < days) {
+                if(v.daysToExpire()!=0) {
+                    message = "The insurance of vehicle with plate " + v.getPlate() + ", owner " + v.getOwner().getName()
+                            + " " + v.getOwner().getSurname() + " and expiration date " + v.getInsuranceEndDate()
+                            + " will expire in " + v.daysToExpire() + " days.";
+                }else{
+                    message = "The insurance of vehicle with plate " + v.getPlate() + ", owner " + v.getOwner().getName()
+                            + " " + v.getOwner().getSurname() + " and expiration date " + v.getInsuranceEndDate()
+                            + " will expire today";
+                }
+                System.out.println(message);
+                if (optionIO == OptionIO.FILE.getOption()) {
+                    writer.write(message);
+                    writer.write(NEW_LINE);
+                }
             }
         }
-
-        vehiclesList.removeAll(tempVehiclesList);
-
-        for (Vehicle v : vehiclesList) {
-            String message = "The insurance of vehicle with plate " + v.getPlate() + ", owner " + v.getOwner().getName()
-                    + " " + v.getOwner().getSurname() + " and expiration date " + v.getInsuranceEndDate()
-                    + " will expire in " + v.daysToExpire() + " days.";
-            System.out.println(message);
-            if (optionIO == OptionIO.FILE.getOption()) {
-                writer.write(message);
-                writer.write(NEW_LINE);
-            }
-        }
-
         writer.close();
-
     }
 
 
