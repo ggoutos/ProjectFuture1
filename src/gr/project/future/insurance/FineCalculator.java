@@ -15,7 +15,7 @@ public class FineCalculator {
 
     public FineCalculator(List<Vehicle> vehiclesInitial){
         vehiclesOwnersMap = new HashMap<>();
-        ArrayList<Vehicle> vehicles = (ArrayList<Vehicle>) vehiclesInitial;
+        List<Vehicle> vehicles = vehiclesInitial;
         for(Vehicle v:vehicles){
             String name = (v.getOwner().getName().strip()+v.getOwner().getSurname().strip()).toLowerCase();
             if(vehiclesOwnersMap.containsKey(name)){
