@@ -47,7 +47,7 @@ public class Vehicle {
 
         System.out.println(message);
 
-        if (optionIO == OptionIO.FILE.getOption()) {
+        if (optionIO == OptionIO.FILE.getOption()) {     // OptionIO = FILE
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(path));
                 writer.write(message);

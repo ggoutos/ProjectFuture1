@@ -14,9 +14,11 @@ import static gr.project.future.utils.Utilities.loadData;
 
 public class MainMenu {
 
+    // FIELDS
     private int optionMenu = -1;
     private int optionIO = -1;
 
+    // CONSTRUCTOR
     public MainMenu() {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -26,9 +28,9 @@ public class MainMenu {
         System.out.println("*3 Uninsured vehicles sorted by plate");
         System.out.println("*4 Fine calculation per owner");
 
-        setOptionMenu(-1);
+        setOptionMenu(-1); // an invalid OptionMenu
 
-        while (!OptionMenu.contains(getOptionMenu())) {
+        while (!OptionMenu.contains(getOptionMenu())) {     // while OptionMenu is not a valid option
             try {
                 setOptionMenu(Integer.parseInt(br.readLine()));
                 if (!OptionMenu.contains(getOptionMenu())) {
@@ -45,9 +47,9 @@ public class MainMenu {
         System.out.println("*1 File");
         System.out.println("*2 Console");
 
-        setOptionIO(-1);
+        setOptionIO(-1); // an invalid OptionIO
 
-        while (!OptionIO.contains(getOptionIO())) {
+        while (!OptionIO.contains(getOptionIO())) {     // While OptionIO is not a valid option
             try {
                 setOptionIO(Integer.parseInt(br.readLine()));
                 if (!OptionIO.contains(getOptionIO())) {
@@ -62,9 +64,10 @@ public class MainMenu {
     }
 
 
+    // BEHAVIOUR
     public static void main(String[] args) throws IOException {
 
-        MainMenu mainMenu = new MainMenu();
+        MainMenu mainMenu = new MainMenu(); // New mainMenu object -> fields: OptionMenu, OptionIO
 
         List<Owner> ownersList = new ArrayList<>();
         List<Vehicle> vehiclesList = new ArrayList<>();
@@ -78,20 +81,20 @@ public class MainMenu {
             System.out.println("Please enter vehicle plate in 'XXX-9999' format:");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String plate = br.readLine();
-            if (plate.matches("[a-zA-Z]{3}-[0-9]{4}")) {
-                getInsuranceStatusBasedOnPlate(vehiclesList, plate, mainMenu.getOptionIO());
+            if (plate.matches("[a-zA-Z]{3}-[0-9]{4}")) {  // If the plate input is in a valid format
+                getInsuranceStatusBasedOnPlate(vehiclesList, plate, mainMenu.getOptionIO()); // Function 1 -> Vehicle.java
             } else {
                 System.err.println("Wrong plate format. Try again.");
             }
 
         }
 
-        if (mainMenu.getOptionMenu() == OptionMenu.FORECOMING_EXPIRIES.getOption()) {
+        if (mainMenu.getOptionMenu() == OptionMenu.FORECOMING_EXPIRIES.getOption()) { // OptionMenu = FORECOMING_EXPIRIES
             //F2: get Vehicle's insurance that are about to expire
             System.out.println("To know the vehicles about to expire in the next <X> days, please provide the timeframe (in days): ");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            int days = -1;
-            while (days < 0) {
+            int days = -1;  // invalid day input
+            while (days < 0) {  // while day input is invalid
                 try {
                     days = Integer.parseInt(br.readLine());
                 } catch (NumberFormatException e) {
