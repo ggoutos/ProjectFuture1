@@ -63,26 +63,19 @@ public class Vehicle {
 
     public static void getForecomingExpiries(List<Vehicle> vehiclesList, int days, int optionIO) throws IOException {
 
-        List<Vehicle> tempVehiclesList = new ArrayList<>();
         String path = "resources/output.txt";
         BufferedWriter writer = new BufferedWriter(new FileWriter(path));
 
         for (Vehicle v : vehiclesList) {
-            if (v.daysToExpire() < 0 || v.daysToExpire() > days) {
-                tempVehiclesList.add(v);
-            }
-        }
-
-        vehiclesList.removeAll(tempVehiclesList);
-
-        for (Vehicle v : vehiclesList) {
-            String message = "The insurance of vehicle with plate " + v.getPlate() + ", owner " + v.getOwner().getName()
-                    + " " + v.getOwner().getSurname() + " and expiration date " + v.getInsuranceEndDate()
-                    + " will expire in " + v.daysToExpire() + " days.";
-            System.out.println(message);
-            if (optionIO == OptionIO.FILE.getOption()) {
-                writer.write(message);
-                writer.write(NEW_LINE);
+            if (v.daysToExpire() >= 0 && v.daysToExpire() <= days) { // If the insurance expires in 0 to x days.
+                String message = "The insurance of vehicle with plate " + v.getPlate() + ", owner " + v.getOwner().getName()
+                        + " " + v.getOwner().getSurname() + " and expiration date " + v.getInsuranceEndDate()
+                        + " will expire in " + v.daysToExpire() + " days.";
+                System.out.println(message);
+                if (optionIO == OptionIO.FILE.getOption()) {
+                    writer.write(message);
+                    writer.write(NEW_LINE);
+                }
             }
         }
 
