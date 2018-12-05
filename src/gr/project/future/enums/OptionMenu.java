@@ -1,6 +1,6 @@
 package gr.project.future.enums;
 
-public enum OptionMenu {
+public enum OptionMenu implements OptionEnum{
     NONE(0),
     VEHICLE_INSURANCE_STATUS  (1),
     FORECOMING_EXPIRIES(2),
@@ -15,15 +15,6 @@ public enum OptionMenu {
 
     public int getOption() {
         return option;
-    }
-
-    public static boolean contains(int value) {
-        for (OptionMenu o : OptionMenu.values()) {
-            if (value == o.getOption()) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

@@ -18,6 +18,8 @@ public class MainMenu {
     private int optionIO = -1;
 
     public MainMenu() {
+        OptionMenu optionMenu = null;
+        OptionIO optionIO = null;
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Select Functionality to perform:");
@@ -28,10 +30,10 @@ public class MainMenu {
 
         setOptionMenu(-1);
 
-        while (!OptionMenu.contains(getOptionMenu())) {
+        while (!optionMenu.contains(getOptionMenu())) {
             try {
                 setOptionMenu(Integer.parseInt(br.readLine()));
-                if (!OptionMenu.contains(getOptionMenu())) {
+                if (!optionMenu.contains(getOptionMenu())) {
                     System.err.println("Invalid option. Please try again.");
                 }
             } catch (NumberFormatException nfe) {
@@ -47,10 +49,10 @@ public class MainMenu {
 
         setOptionIO(-1);
 
-        while (!OptionIO.contains(getOptionIO())) {
+        while (!optionIO.contains(getOptionIO())) {
             try {
                 setOptionIO(Integer.parseInt(br.readLine()));
-                if (!OptionIO.contains(getOptionIO())) {
+                if (!optionIO.contains(getOptionIO())) {
                     System.err.println("Invalid option. Please try again.");
                 }
             } catch (NumberFormatException nfe) {
@@ -107,7 +109,7 @@ public class MainMenu {
             getUninsuredVehiclesSortedByPlate(vehiclesList, mainMenu.getOptionIO());
         }
 
-        if (mainMenu.getOptionMenu() == OptionMenu.FINE_CALCULATION_PER_OWNER.getOption()){
+        if (mainMenu.getOptionMenu() == OptionMenu.FINE_CALCULATION_PER_OWNER.getOption()) {
             //F4 calculate total fine for a specific owner
             FineCalculator fineCalculator = new FineCalculator(vehiclesList);
             System.out.println("Please enter the First name of the Owner");
@@ -115,12 +117,12 @@ public class MainMenu {
             String firstName = bufferedReader.readLine();
             System.out.println("Please provide the Last name of the Owner");
             String lastName = bufferedReader.readLine();
-            if(fineCalculator.isNameValid(firstName,lastName)){
+            if (fineCalculator.isNameValid(firstName, lastName)) {
                 System.out.println("Please enter the fine for a single uninsured vehicle");
                 double fine = Double.parseDouble(bufferedReader.readLine());
-                String name = fineCalculator.getName(firstName,lastName);
-                System.out.println("This owners fine is: "+fineCalculator.getFine(name,fine));
-            }else{
+                String name = fineCalculator.getName(firstName, lastName);
+                System.out.println("This owners fine is: " + fineCalculator.getFine(name, fine));
+            } else {
                 System.out.println("This owner is not valid");
             }
         }

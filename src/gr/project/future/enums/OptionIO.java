@@ -1,6 +1,6 @@
 package gr.project.future.enums;
 
-public enum OptionIO {
+public enum OptionIO implements OptionEnum{
     NONE (0),
     FILE  (1),
     CONSOLE(2);
@@ -15,13 +15,6 @@ public enum OptionIO {
         return option;
     }
 
-    public static boolean contains(int value) {
-        for (OptionIO o : OptionIO.values()) {
-            if (value == o.getOption()) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
 }
